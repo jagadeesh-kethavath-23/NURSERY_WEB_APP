@@ -5,24 +5,16 @@
         
     </head>
     <body>
-      <br><br><br>
-        <div class="logincontent">
-            <div class="logintop">
-                <h1>Login</h1>
-            </div>
-            <br>
-            <div class="loginbottom">
+      
               <form action="{{ url_for('signin')}}" method="post" autocomplete="off"><br>
-            <div class="msg">{{ msg }}</div>
-            <input type="number" name="user_id" placeholder="Enter Your id" class="textbox" id="user_id" required><br><br>
-            <input type="password" name="password" placeholder="Enter Your Password" class="textbox" id="passwd" required><br><br>
-            <input type="submit" class="btn" value="Login">
+            <div >{{ msg }}</div>
+            <input type="number" name="user_id" placeholder="Enter Your id"  required><br><br>
+            <input type="password" name="password" placeholder="Enter Your Password"  required><br><br>
+            <input type="submit"  value="Login">
               </form>
               <a href="{{url_for('signup')}}">signup</a>
-              <br>
-              <br>
+             
 
-            </div>
-        </div>
+           
     </body>
 </html>
