@@ -83,6 +83,91 @@ def signup():
         
     msg = 'please fill out form'
     return render_template('signup.html',msg=msg)
+
+#---------------shop by search---------------
+@app.route('/shopbysearch/<product_type>',methods['GET']) 
+def shopbysearch(product_type):
+    msg = ''
+    if product_type == 'plants' or product_type =='seeds' or product_type == 'fertilizers' or product_type == 'accessories':
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute('select * from products where product_type = (%s)',(product_type,))
+        products = cursor.fetchall()
+        if products:
+            return render_template('shop.html',products=products)
+        msg=str(product_type)+ ' are out of stock'
+        render_template('shop.html',msg = msg)
+    msg = "no such services avaliable"
+    return render_template('shop.html',msg=msg)
+
+#------------shop---------------------
+@app.route('/shop',methods=['GET'])
+def shop():
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cursor.execute('select * from products')
+    products = cursor.fetchall()
+    if products:
+        return render_template('shop.html',products=products)
+    msg='All types of products are out of stock'
+    render_template('shop.html',msg = msg) 
+
+#-------------order and payment-----------------
+@app.route('/orders/<product_id>'methods=['GET','POST'])
+def orders(product_id):
+    msg=''
+    if 'user_id' in session:
+        cursor = mysql.connection.cursor(MySQLdb.cursors.Dictcursor)
+        cursor.execute('select * from products where product_id = (%s)',(product_id,))
+        product = cursor.fetchone()
+        cursor.execute('select sum(order_quantity) as quantity from orders where product_id=(%s)',(product_id,))
+        already_ordered = cursor.fetchone()
+        avaliable_product_quantity = int(product['quantity'])-int(already_ordered['quantity'])
+        if request.method == 'GET':
+            return render_template('discription.html',product=product,avaliable_product_quantity=avaliable_product_quantity)
+        if 'cvv' in request.form and 'card_number' in request.form and 'amount' in request.form and 'quantity' in request.form:
+            ordered_date=date.today()
+            cursor.execute(select * from payment where card_number=(%s) and cvv=(%s) and user_id=(%s),(card_number,cvv,session['user_id'],))
+            credentials=cursor.fetchone()
+            if credentials:
+                m = (  int(quantity)  )*( int(product['cost']) )
+                if (int(credentials['balance']))>=m
+                    if quantity<=avaliable_product_quantity:
+                        cursor.execute('insert into orders values (%s,%s,%s,%s)',(session['user_id'],product_id,quantity,ordered_date,))
+                        mysql.connection.commit()
+                        balance = int(credentials['balance'])-m
+                        cursor.execute('update payment set balance=(%s) where user_id=(%s) and card_number=(%s)',(balance,session['user_id'],card_number,))
+                        avaliable_product_quantity = avaliable_product_quantity - int(quantity)
+                        msg = 'successfully ordered'
+                        return render_template('discription.html',product=product,avaliable_product_quantity=avaliable_product_quantity,msg=msg)
+                    msg = 'quantity is more than avaliability'
+                    return render_template('discription.html',product=product,avaliable_product_quantity=avaliable_product_quantity,msg=msg)
+                msg = "you dont have enough money"
+                return render_template('discription.html',product=product,avaliable_product_quantity=avaliable_product_quantity,msg=msg)
+            msg = 'incorrect card number or cvv'
+            return render_template('discription.html',product=product,avaliable_product_quantity=avaliable_product_quantity,msg=msg)    
+        msg = 'fill out details'
+        return render_template('discription.html',product=product,avaliable_product_quantity=avaliable_product_quantity,msg=msg)
+    msg = 'please signin before ordering'
+    return render_template('signin.html',msg=msg)
+#------------myorders---------------
+@app.route('/myorders')
+def myorders():
+    msg=''
+    if 'user_id' in session:
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute('select * from orders where user_id = (%s)',(session['user_id'],))
+        my_orders = cursor.fetchall()
+        if my_orders:
+            msg='your orders'
+            return render_template('myorders.html',msg=msg)
+        msg='no orders yet'
+        return render_template('myorders.html',msg=msg)
+    msg = 'please signin to check orders'
+    return render_template('signin.html',msg = msg)
+#------------add_to_cart------------
+#------------my_cart----------------
+#-----------remove_from_cart--------
+#----------reviews
     
-             
+
+    
 
