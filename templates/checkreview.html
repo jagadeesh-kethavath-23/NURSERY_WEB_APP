@@ -1,0 +1,47 @@
+<html>
+    <head>
+        <title>
+
+        </title>
+    </head>
+    <body>
+        {{msg}}
+        {% block content %}
+        
+            <table><br>
+                
+                <tr>
+                    <td><h2> name: </h2></td>
+                    <td><h2>{{ product['product_name'] }}</h2></td>
+                </tr>
+                <tr>
+                    <td><h2>it is :  </h2></td>
+                    <td><h2>{{ product['product_type'] }}</h2></td>
+                </tr>
+                <tr>
+                    <td><h2>cost :  </h2></td>
+                    <td><h2>{{ product['cost'] }}</h2></td>
+                </tr>
+                
+                </table>
+                {%for review in reviews%}
+                <table><br>
+                
+                    <tr>
+                        <td><h2> name: </h2></td>
+                        <td><h2>{{ review['rating'] }}</h2></td>
+                    </tr>
+                    <tr>
+                        <td><h2>it is :  </h2></td>
+                        <td><h2>{{ review['discription'] }}</h2></td>
+                    </tr>
+                    
+                   
+                    </table>
+                {%endfor%}
+
+            
+        
+    {% endblock %}
+    </body>
+</html>
