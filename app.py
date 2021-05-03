@@ -90,6 +90,11 @@ def signup():
     return render_template('signup.html',msg=msg)
 
 
+#----------------logout----------------------
+@app.route('/logout')
+def logout():
+
+    return render_template('index.html')
 #---------------shop by search---------------
 @app.route('/shopbysearch',methods=['POST']) 
 def shopbysearch():
@@ -140,8 +145,7 @@ def orders(product_id):
         q=0
         if already_ordered['quantity']=='null':
             q=0
-        
-            #q=int(  str(already_ordered['quantity'])   )
+        q=int(  str(already_ordered['quantity'])   )
         avaliable_product_quantity = p-q
         if request.method == 'GET':
             return render_template('discription.html',product=product,avaliable_product_quantity=avaliable_product_quantity)
@@ -237,6 +241,9 @@ def givereview(product_id):
 #------------add_to_cart------------
 #------------my_cart----------------
 #-----------remove_from_cart--------
+if __name__ == '__main__':
+    app.run(debug=True)
+    app.run(host ="localhost", port = int("5000"))
 
     
 
