@@ -1,0 +1,35 @@
+<html>
+    <head>
+        <title>
+
+        </title>
+    </head>
+    <body>
+        {{msg}}
+        {% block content %}
+        
+                {%for card in cards%}
+                <table><br>
+                
+                    <tr>
+                        <td><h2> name: </h2></td>
+                        <td><h2>{{ card['card_number'] }}</h2></td>
+                    </tr>
+                    <tr>
+                        <td><h2>it is :  </h2></td>
+                        <td><h2>{{ card['cvv'] }}</h2></td>
+                    </tr>
+                    <tr>
+                        <td><h2>it is :  </h2></td>
+                        <td><h2>{{ card['balance'] }}</h2></td>
+                    </tr>
+                    
+                   
+                    </table>
+                {%endfor%}
+
+            
+        
+    {% endblock %}
+    </body>
+</html>

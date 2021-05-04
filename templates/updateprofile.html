@@ -1,0 +1,22 @@
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title> updateprofile </title>
+        
+    </head>
+    <body>
+      
+              <form action="{{ url_for('updateprofile')}}" method="post" autocomplete="off"><br>
+            <div >{{ msg }}</div>
+            <input type="text" name="name" placeholder="Enter Your name"  required><br><br>
+            <input type="password" name="password" placeholder="Enter Your Password"  required><br><br>
+            <input type="text" name="gender" placeholder="Enter Your gender"  required><br><br>
+            <input type="text" name="address" placeholder="Enter Your address"  required><br><br>
+            <input type="submit"  value="update">
+              </form>
+              
+             
+
+           
+    </body>
+</html>

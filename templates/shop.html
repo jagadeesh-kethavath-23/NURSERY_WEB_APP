@@ -23,7 +23,7 @@
                     <td><h2>{{ product['cost'] }}</h2></td>
                 </tr>
                 <a href="{{url_for('orders',product_id=product['product_id'])}}">order</a>
-                
+                <a href="{{url_for('add_to_cart',product_id=product['product_id'])}}">add ot cart</a>
                 {% endfor %}
 
             </table>

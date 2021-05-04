@@ -1,0 +1,26 @@
+<html>
+    <head>
+        <title>
+
+        </title>
+    </head>
+    <body>
+        {{msg}}
+        {% block content %}
+
+                <table><br>
+                
+                    <tr>
+                        <td><h2> name: </h2></td>
+                        <td><h2>{{ user['user_id'] }}</h2></td>
+                    </tr>
+                    <tr>
+                        <td><h2>it is :  </h2></td>
+                        <td><h2>{{ user['name'] }}</h2></td>
+                    </tr>
+                    </table>   
+                    <a href="{{url_for('updateprofile')}}">update</a>   
+        
+    {% endblock %}
+    </body>
+</html>

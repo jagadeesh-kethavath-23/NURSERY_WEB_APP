@@ -45,6 +45,7 @@ def signin():
         touple = cursor.fetchone()
         if touple:
             session['user_id']=touple['user_id']
+            session['loggedin'] = True
             msg = 'successfully logged in'
             if password == 'P@55word#admin#':
                 return render_template('adminhome.html',msg=msg)
@@ -250,7 +251,7 @@ def add_to_cart(product_id):
     msg=''
     if 'user_id' in session:
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursors.execute('select * from cart where user_id=(%s) and product_id=(%s)',(session['user_id'],product_id,))
+        cursor.execute('select * from cart where user_id=(%s) and product_id=(%s)',(session['user_id'],product_id,))
         exists = cursor.fetchone()
         if not exists:
             cursor.execute('insert into cart values(%s,%s)',(session['user_id'],product_id,))
@@ -266,9 +267,10 @@ def add_to_cart(product_id):
 #------------my_cart----------------
 @app.route('/mycart',methods=['GET'])
 def mycart():
+    msg=''
     if 'user_id' in session:
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursors.execute('select * from cart where user_id=(%s)',(session['user_id'],))
+        cursor.execute('select * from cart where user_id=(%s)',(session['user_id'],))
         products = cursor.fetchall()
         if products:
             msg = 'your cart items'
@@ -285,7 +287,7 @@ def remove(product_id):
     msg=''
     if 'user_id' in session:
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursors.execute('delete from cart where user_id=(%s) and product_id=(%s)',(session['user_id'],product_id))
+        cursor.execute('delete from cart where user_id=(%s) and product_id=(%s)',(session['user_id'],product_id))
         mysql.connection.commit()
         msg='removed from cart successfully'
         return render_template('exists.html',msg=msg)
@@ -296,9 +298,10 @@ def remove(product_id):
 #------------profile------------------
 @app.route('/profile',methods=['GET'])
 def profile():
+    msg=''
     if 'user_id' in session:
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursors.execute('select * from users where user_id=(%s)',(session['user_id'],))
+        cursor.execute('select * from users where user_id=(%s)',(session['user_id'],))
         user = cursor.fetchone()
         return render_template('profile.html',user=user)
     msg = 'signin to display profile'
@@ -307,6 +310,7 @@ def profile():
 #----------updateprofile-------------
 @app.route('/updateprofile',methods=['GET','POST'])
 def updateprofile():
+    msg=''
     if 'user_id' in session:
         if request.method=='GET':
             return render_template('updateprofile.html',msg=msg)
@@ -316,11 +320,11 @@ def updateprofile():
             password = request.form['password']
             address = request.form['address']
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-            cursor.execute('update users set name=(%s) and gender=(%s) and password=(%s) and address=(%s) where user_id=(%s)',(name,gender,password,address,session['user_id'],))
+            cursor.execute('update users set name=(%s) ,gender=(%s) ,password=(%s) ,address=(%s) where user_id=(%s)',(name,gender,password,address,session['user_id'],))
             mysql.connection.commit()
             msg = 'successfully updated'
             return redirect(url_for('profile'))
-        mag='fillout form'
+        msg='fillout form'
         return render_template('updateprofile.html',msg=msg)
     msg='login to update profile'
     return render_template('signin.html',msg=msg)
@@ -331,7 +335,7 @@ def wallet():
     msg=''
     if 'user_id' in session:
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute('select sum(balance) as amount from payment where user_id=(%s)',(session['user_id']))
+        cursor.execute('select sum(balance) as amount from payment where user_id=(%s)',(session['user_id'],))
         balance=cursor.fetchone()
         if balance['amount']=='null':
             return render_template('wallet.html',balance=0)

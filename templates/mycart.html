@@ -1,0 +1,35 @@
+<html>
+    <head>
+        <title>
+
+        </title>
+    </head>
+    <body>
+        {{msg}}
+        {% block content %}
+        
+                {%for product in products%}
+                <table><br>
+                
+                    <tr>
+                        <td><h2> name: </h2></td>
+                        <td><h2>{{ product['product_id'] }}</h2></td>
+                    </tr>
+                    <tr>
+                        <td><h2>it is :  </h2></td>
+                        <td><h2>{{ product['product_name'] }}</h2></td>
+                    </tr>
+                    <tr>
+                        <td><h2>it is :  </h2></td>
+                        <td><h2>{{ product['product_type'] }}</h2></td>
+                    </tr>
+                    
+                   <a href="{{url_for('remove',product_id=product['product_id'])}}">remove</a>
+                    </table>
+                {%endfor%}
+
+            
+        
+    {% endblock %}
+    </body>
+</html>
