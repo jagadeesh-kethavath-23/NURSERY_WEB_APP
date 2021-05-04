@@ -19,6 +19,7 @@ mysql = MySQL(app)
 
 #----------------default page when the server gets loaded-----------------
 @app.route('/')
+@app.route('/index')
 def index():
     msg=''
     return render_template('index.html')
@@ -93,8 +94,11 @@ def signup():
 #----------------logout----------------------
 @app.route('/logout')
 def logout():
-
+    session.pop('user_id', None)
+    return redirect(url_for('index'))
     return render_template('index.html')
+
+
 #---------------shop by search---------------
 @app.route('/shopbysearch',methods=['POST']) 
 def shopbysearch():
@@ -238,9 +242,138 @@ def givereview(product_id):
         return render_template('givereview.html',product = product,msg=msg)
     msg = 'signin to give review'
     return render_template('signin.html',msg=msg)
+
+
 #------------add_to_cart------------
+@app.route('/add_to_cart/<product_id>',methods=['GET'])
+def add_to_cart(product_id):
+    msg=''
+    if 'user_id' in session:
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursors.execute('select * from cart where user_id=(%s) and product_id=(%s)',(session['user_id'],product_id,))
+        exists = cursor.fetchone()
+        if not exists:
+            cursor.execute('insert into cart values(%s,%s)',(session['user_id'],product_id,))
+            mysql.connection.commit()
+            msg = 'successfully added'
+            return render_template('exists.html',msg=msg)
+        msg='it already exists'
+        return render_template('exists.html',msg=msg)
+    msg='login to add to cart'
+    return render_template('signin.html',msg=msg)        
+
+
 #------------my_cart----------------
+@app.route('/mycart',methods=['GET'])
+def mycart():
+    if 'user_id' in session:
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursors.execute('select * from cart where user_id=(%s)',(session['user_id'],))
+        products = cursor.fetchall()
+        if products:
+            msg = 'your cart items'
+            return render_template('mycart.html',products=products,msg=msg)
+        msg='no items in your cart'
+        return render_template('mycart.html',msg=msg)
+    msg='signin to check cart'
+    return render_template('signin.html',msg=msg)
+
+
 #-----------remove_from_cart--------
+@app.route('/remove/<product_id>',methods=['GET'])
+def remove(product_id):
+    msg=''
+    if 'user_id' in session:
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursors.execute('delete from cart where user_id=(%s) and product_id=(%s)',(session['user_id'],product_id))
+        mysql.connection.commit()
+        msg='removed from cart successfully'
+        return render_template('exists.html',msg=msg)
+    msg='singin to remove product from cart'
+    return render_template('signin.html',msg=msg)
+
+
+#------------profile------------------
+@app.route('/profile',methods=['GET'])
+def profile():
+    if 'user_id' in session:
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursors.execute('select * from users where user_id=(%s)',(session['user_id'],))
+        user = cursor.fetchone()
+        return render_template('profile.html',user=user)
+    msg = 'signin to display profile'
+    return render_template('signin.html',msg=msg)
+
+#----------updateprofile-------------
+@app.route('/updateprofile',methods=['GET','POST'])
+def updateprofile():
+    if 'user_id' in session:
+        if request.method=='GET':
+            return render_template('updateprofile.html',msg=msg)
+        if 'name' in request.form and 'gender' in request.form and 'password' in request.form and  'address' in request.form:
+            name = request.form['name']
+            gender = request.form['gender']
+            password = request.form['password']
+            address = request.form['address']
+            cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+            cursor.execute('update users set name=(%s) and gender=(%s) and password=(%s) and address=(%s) where user_id=(%s)',(name,gender,password,address,session['user_id'],))
+            mysql.connection.commit()
+            msg = 'successfully updated'
+            return redirect(url_for('profile'))
+        mag='fillout form'
+        return render_template('updateprofile.html',msg=msg)
+    msg='login to update profile'
+    return render_template('signin.html',msg=msg)
+
+#----------------wallet----------
+@app.route('/wallet')
+def wallet():
+    msg=''
+    if 'user_id' in session:
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute('select sum(balance) as amount from payment where user_id=(%s)',(session['user_id']))
+        balance=cursor.fetchone()
+        if balance['amount']=='null':
+            return render_template('wallet.html',balance=0)
+        return render_template('wallet.html',balance = balance['amount'])
+        return render_template('wallet.html')
+    msg='signin to check wallet'
+    return render_template('signin',msg=msg)
+
+#------------mycards-------------
+@app.route('/mycards')
+def mycards():
+    msg=''
+    if 'user_id' in session:
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute('select * from payment where user_id=(%s)',(session['user_id'],))
+        cards = cursor.fetchall()
+        if cards:
+            msg='your cards'
+            return render_template('mycards.html',cards=cards,msg=msg)
+        msg='no cards yet'
+        return render_template('mycards.html',msg=msg)
+    msg='signin to check cards'
+    return render_template('signin',msg=msg)
+#-------------removecard------------------
+#-------------addbalance--------------------
+#if request.method=='GET':
+#    return render_template('addbalance.html')
+#if 'card_number' in request.form and 'cvv' in request.form and 'balance' in request.form:
+#    card_number=request.form['card_number']
+#    cvv = request.form['cvv']
+#    balance = request.form['balance']
+#   cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+#  cursor.execute('select * from payment where user_id=(%s) and card_number=(%s) and cvv=(%s)',(session['user_id'],card_number,cvv,))
+# exists = cursor.fetchone()
+# if exists:
+#msg='invald credentials'
+#return render_template('addbalance.html',msg=msg)
+
+#----------------add admins---------
+#----------------add products to ware house---------
+#-----------------add products to web------------
+
 if __name__ == '__main__':
     app.run(debug=True)
     app.run(host ="localhost", port = int("5000"))

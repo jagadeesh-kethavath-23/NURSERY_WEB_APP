@@ -5,6 +5,7 @@
     <body>
         <a href="{{url_for('myorders')}}">my orders</a>
         <a href="{{url_for('shop')}}">shop</a>
+        <a href="{{url_for('logout')}}">logout</a>
         <form action="{{url_for('shopbysearch')}}"method='post'>
             <input type="text" name="product_type" placeholder="search here"  required><br><br>
             <input type="submit"  value="search">
