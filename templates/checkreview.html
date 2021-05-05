@@ -3,45 +3,90 @@
         <title>
 
         </title>
+        <link rel="stylesheet" href="../static/style.css">
     </head>
     <body>
-        {{msg}}
+        <div class="msg">{{msg}}</div>
         {% block content %}
         
-            <table><br>
+            
                 
-                <tr>
-                    <td><h2> name: </h2></td>
-                    <td><h2>{{ product['product_name'] }}</h2></td>
-                </tr>
-                <tr>
-                    <td><h2>it is :  </h2></td>
-                    <td><h2>{{ product['product_type'] }}</h2></td>
-                </tr>
-                <tr>
-                    <td><h2>cost :  </h2></td>
-                    <td><h2>{{ product['cost'] }}</h2></td>
-                </tr>
+                <div class="one" style="margin-left: 10px">
+                    <div class="content" align="center" >  <br>
+                        <div class="contentbar" style="height: 300px;margin-top: 10px;">
+                            <h1>Discription</h1>    <br>
+                                <div class="border">
+                                    <table class="worddark"><br>
                 
-                </table>
-                {%for review in reviews%}
-                <table><br>
+                                        <tr>
+                                          <td> </td>
+                                        </tr>
+                                        <tr>
+                                          <td><h2> Product Name: </h2></td>
+                                          <td><h2>{{ product['product_name'] }}</h2></td>
+                                      </tr>
+                                        <tr><td></td></tr>
+                                        <tr>
+                                          <td> </td>
+                                        </tr>
+                                        <tr>
+                                            <td><h2>Product Type :  </h2></td>
+                                            <td><h2>{{ product['product_type'] }}</h2></td>
+                                        </tr>
+                                      <tr>
+                                        <td><h2>cost :  </h2></td>
+                                        <td><h2>{{ product['cost'] }}</h2></td>
+                                      </tr>
+                                        <tr><td></td></tr>
+                                        <tr>
+                                          <td> </td>
+                                        </tr>
+                                     
+                                        
+                                    </table>
+                                </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% for review in reviews %}
+                <!--div class="one">
+                    <div class="content" align="center">  <br>
+                        <div class="contentbar">
+                            <h1>My shelf</h1>    <br>
+                                <div class="border">-->
+                                    <div style="border: 2px solid black; width: 400px;margin-left: 37vw;">
+                                    <table ><br>
+                                        <tr>
+                                            <td><h2> user: </h2></td>
+                                            <td><h2>{{ review['user_id'] }}</h2></td>
+                                        </tr>
+                                        
+                                        <tr>
+                                            <td><h2> rating: </h2></td>
+                                            <td><h2>{{ review['rating'] }}</h2></td>
+                                        </tr>
+                                        <tr>
+                                            <td><h2>discription :  </h2></td>
+                                            <td><h2>{{ review['discription'] }}</h2></td>
+                                        </tr>
+                                        
+                                        </tr>
+                                        
+                                        <hr><hr>
+                                        <br><br>
+                                        
+                                        <br><br>
+                                        
+                                        {% endfor %}
                 
-                    <tr>
-                        <td><h2> name: </h2></td>
-                        <td><h2>{{ review['rating'] }}</h2></td>
-                    </tr>
-                    <tr>
-                        <td><h2>it is :  </h2></td>
-                        <td><h2>{{ review['discription'] }}</h2></td>
-                    </tr>
-                    
-                   
-                    </table>
-                {%endfor%}
+                                    </table>
 
             
         
     {% endblock %}
     </body>
 </html>
+
+                

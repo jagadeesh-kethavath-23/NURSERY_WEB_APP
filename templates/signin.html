@@ -1,20 +1,28 @@
-<html>
-    <head>
-        <meta charset="UTF-8">
-        <title> Login </title>
-        
-    </head>
-    <body>
-      
-              <form action="{{ url_for('signin')}}" method="post" autocomplete="off"><br>
-            <div >{{ msg }}</div>
-            <input type="text" name="user_id" placeholder="Enter Your id"  required><br><br>
-            <input type="password" name="password" placeholder="Enter Your Password"  required><br><br>
-            <input type="submit"  value="Login">
-              </form>
-              <a href="{{url_for('signup')}}">signup</a>
-             
-
-           
-    </body>
-</html>
+	<html>
+		<head>
+			<meta charset="UTF-8">
+			<title> Login </title>
+			<link rel="stylesheet" href="../static/style.css">
+		</head>
+		<body  style="background-image:url('../static/images/i5.jpg');background-size: cover;color:white ">
+		  <br><br><br>
+			<div class="logincontent" align="center" style="background-color:whitesmoke;margin-left: 50px;">
+				<div class="logintop">
+					<h1>Login</h1>
+				</div>
+				<br>
+				<div class="loginbottom">
+				  <form action="{{ url_for('signin')}}" method="post" autocomplete="off"><br>
+				<div class="msg">{{ msg }}</div>
+				<input type="text" name="user_id" placeholder="Enter Your phone number" class="textbox" id="mail_id" required><br><br>
+				<input type="password" name="password" placeholder="Enter Your Password" class="textbox" id="passwd" required><br><br>
+				<input type="submit" class="btn" value="Login">
+				  </form>
+				  <br>
+				  <br>
+				  <p class="worddark">New to this page? <a class="worddark" href="{{ url_for('signup')}}">Register here</a></p>
+				</div>
+			</div>
+		</body>
+	</html>
+	

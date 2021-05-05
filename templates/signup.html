@@ -1,23 +1,31 @@
-<html>
-    <head>
-        <meta charset="UTF-8">
-        <title> signup </title>
-        
-    </head>
-    <body>
-    
-              <form action="{{ url_for('signup')}}" method="post" autocomplete="off"><br>
-            <div >{{ msg }}</div>
-            <input type="text" name="name" placeholder="Enter Your name"  required><br><br>
-            <input type="text" name="user_id" placeholder="Enter Your phone_number"  required><br><br>
-            <input type="text" name="gender" placeholder="Enter Your gender"  required><br><br>
-            <input type="password" name="password" placeholder="Enter Your Password"  required><br><br>
-            <input type="text" name="address" placeholder="Enter Your address"  required><br><br>
-            <input type="submit" class="btn" value="Login">
-              </form>
-              
 
-            </div>
-        </div>
-    </body>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title> Sign Up </title>
+    <link rel="stylesheet" href="../static/style.css">
+  </head>
+  <body  style="background-image:url('../static/images/login_back.jpg');background-size: cover;color:white ">
+    <br><br><br>
+    <div class="logincontent" align="center" style="background-color:whitesmoke;margin-left: 500px;height: 500px;">
+      <div class="logintop">
+        <h1>Sign Up</h1>
+      </div>
+      <br>
+      <div class="loginbottom">
+		<form action="{{ url_for('signup')}}" method="post" autocomplete="off"><br>
+      <div class="msg">{{ msg }}</div>
+			<input type="text" name="name" placeholder="Enter Your name" class="textbox" id="mail_id" required><br><br>
+            <input type="text" name="user_id" placeholder="Enter Your phone_number" class="textbox" id="mail_id" required><br><br>
+            <input type="text" name="gender" placeholder="Enter Your gender" class="textbox" id="mail_id" required><br><br>
+            <input type="password" name="password" placeholder="Enter Your Password" class="textbox" id="mail_id" required><br><br>
+            <input type="text" name="address" placeholder="Enter Your address" class="textbox" id="mail_id" required><br><br>
+            <input type="submit" class="btn" value="Login">
+		</form><br>
+    <p class="worddark">already had an account <a class="worddark" href="{{ url_for('signin')}}">sign in here</a></p><br><br>
+  </div>
+</div>
+</body>
 </html>
+
+

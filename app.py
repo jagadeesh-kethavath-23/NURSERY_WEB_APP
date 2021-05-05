@@ -101,12 +101,12 @@ def logout():
 
 
 #---------------shop by search---------------
-@app.route('/shopbysearch',methods=['POST']) 
+@app.route('/shopbysearch',methods=['GET','POST']) 
 def shopbysearch():
     msg = ''
     if 'product_type' in request.form:
         product_type = request.form['product_type']
-        if product_type == 'plants' or product_type =='seeds' or product_type == 'fertilizers' or product_type == 'accessories':
+        if product_type == "plant" or product_type =="seeds" or product_type == "fertilizers" or product_type == "accessories":
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
             cursor.execute('select * from products where product_type = (%s)',(product_type,))
             products = cursor.fetchall()
@@ -115,7 +115,7 @@ def shopbysearch():
             msg=str(product_type)+ ' are out of stock'
             render_template('shop.html',msg = msg)
         msg = "no such services avaliable"
-        return render_template('shop.html',msg=msg)
+        return render_template('exists.html',msg=msg)
     msg = "please fill details"
     return render_template('shop.html',msg=msg)
 

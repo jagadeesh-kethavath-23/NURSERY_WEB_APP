@@ -3,35 +3,70 @@
         <title>
 
         </title>
+        <link rel="stylesheet" href="../static/style.css">
     </head>
     <body>
         {{msg}}
-        {% block content %}
-        <div>
-            <table><br>
-                
-                <tr>
-                    <td><h2> name: </h2></td>
-                    <td><h2>{{ product['product_name'] }}</h2></td>
-                </tr>
-                <tr>
-                    <td><h2>it is :  </h2></td>
-                    <td><h2>{{ product['product_type'] }}</h2></td>
-                </tr>
-                <tr>
-                    <td><h2>cost :  </h2></td>
-                    <td><h2>{{ product['cost'] }}</h2></td>
-                </tr>
-                
-                <form action="{{url_for('givereview',product_id=product['product_id'])}}" method="post">
-                <input type="text" name="discription" placeholder="Enter rating"  required><br><br>
-                <input type="number" name="rating" placeholder="write discription"  required><br><br> 
-                <input type='submit' value='done'>
-                </form>
-                <a href="{{url_for('checkreview',product_id=product['product_id'])}}">reviews</a>
-
-            </table>
+    {% block content %}
+        <div class="one" style="margin-left: 10px">
+            <div class="content" align="center" >  <br>
+                <div class="contentbar" style="height: 300px;margin-top: 10px;">
+                    <h1>Discription</h1>    <br>
+                        <div class="border">
+                            <table class="worddark"><br>
+        
+                                <tr>
+                                  <td> </td>
+                                </tr>
+                                <tr>
+                                  <td><h2> Product Name: </h2></td>
+                                  <td><h2>{{ product['product_name'] }}</h2></td>
+                              </tr>
+                                <tr><td></td></tr>
+                                <tr>
+                                  <td> </td>
+                                </tr>
+                                <tr>
+                                    <td><h2>Product Type :  </h2></td>
+                                    <td><h2>{{ product['product_type'] }}</h2></td>
+                                </tr>
+                              <tr>
+                                <td><h2>cost :  </h2></td>
+                                <td><h2>{{ product['cost'] }}</h2></td>
+                            </tr>
+                          
+                                <tr><td></td></tr>
+                                <tr>
+                                  <td> </td>
+                                </tr>
+                                
+                                <tr>   
+                                    <span>  </span><button class="btn"><a style="color:white" href="{{url_for('checkreview',product_id=product['product_id'])}}">Check Reviews</a></button>                      
+                                </tr>
+                                
+                            </table>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
+                <div class="logincontent" align="center" style="background-color:whitesmoke;margin-left: 550px;height: 300px;margin-top: 30px">
+                    <div class="logintop">
+                      <h1>Review</h1>
+                    </div>
+                    <br>
+            <div class="loginbottom">
+                <form action="{{url_for('givereview',product_id=product['product_id'])}}" method="post">
+                <input type="text" name="discription" placeholder="Enter discription"  class="textbox" id="mail_id" required><br><br>
+                <input type="number" name="rating" placeholder=" rate out of 5" class="textbox" id="mail_id"  required><br><br> 
+                <input type='submit' class="btn" value='done'>
+                </form>
+       
+            </div>
+        
+           
+        
     {% endblock %}
     </body>
 </html>
