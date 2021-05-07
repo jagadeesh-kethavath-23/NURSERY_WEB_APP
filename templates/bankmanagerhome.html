@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -124,57 +126,41 @@
       </form>
     </div>
   </nav>
-  </body>
 
-
-<html lang="en">
+<html>
     <head>
-        <title>display</title>
+        <title>
+
+        </title>
         <link rel="stylesheet" href="../static/style.css">
     </head>
-    <body style=" background-image:url('../static/images/login_back.jpg');background-size: cover">
-        <div id="msg">{{msg}}</div>
-        {% for card in cards %}
-        <!--div class="one">
-            <div class="content" align="center">  <br>
-                <div class="contentbar">
-                    <h1>My shelf</h1>    <br>
-                        <div class="border">-->
-                            <div style="border: 2px solid black; width: 400px;margin-left: 30vw;">
-                            <table ><br>
+    <body>
+        {{msg}}
+    {% block content %}
+        <div class="one" style="margin-left: 10px">
+            <div class="content" align="center" >  <br>
+                <div class="contentbar" style="height: 200px;margin-top: 150px;">
+                    <h1></h1>    <br>
+                        <div class="border">
+                            <table class="worddark"><br>
+        
                                 <tr>
-                                    <td><h2>Card Name:  </h2></td>
-                                    <td><h2>{{ card['card_number'] }}</h2></td>
+                                  <td> </td>
                                 </tr>
-                                <tr>
-                                    <td><h2>Card Cvv:  </h2></td>
-                                    <td><h2>{{ card['cvv'] }}</h2></td>
-                                </tr>
-                                <tr>
-                                    <td><h2>Balance:  </h2></td>
-                                    <td><h2>{{ card['balance'] }}</h2></td>
+                              
+                            
+                                
+                                <tr>   
+                                    <span>  </span><button class="btn"><a style="color:white" href="{{url_for('addcard')}}">add card</a></button>              
+                                    <span>  </span><button class="btn"><a style="color:white" href="{{url_for('addbalance')}}">add balance</a></button>  <br>                   
                                 </tr>
                                 
-                                </tr>
-                                
-                                <hr><hr>
-                                <br><br>
-                                <img src="../static/images/login_back.jpg" style="width:380px;height:200px;border-left: 40px"><br><br>
-                                
-                                    <span>                                                                                                                                                    
-
-                                    <!--<input type="submit" class="btn" value="order"><span>''</span>
-                                    <input type="submit" class="btn" value="add">-->
-                                
-                                <br><br>
-                                
-                                {% endfor %}
-
                             </table>
                         </div>
-                        <!--</div>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>-->
-    </body>
-</html>
+        </div>
+        {% endblock %}
+        </body>

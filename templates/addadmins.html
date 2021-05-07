@@ -1,0 +1,31 @@
+<html>
+    <head>
+        <title>
+
+        </title>
+        <link rel="stylesheet" href="../static/style.css">
+    </head>
+    <body>
+        {{msg}}
+    {% block content %}
+<div class="logincontent" align="center" style="background-color:whitesmoke;margin-left: 550px;height: 500px;margin-top: 30px">
+    <div class="logintop">
+      <h1>add</h1>
+    </div>
+    <br>
+<div class="loginbottom">
+<form action="{{url_for('addadmin')}}" method="post">
+<input type="text" name="user_id" placeholder="Enter ph no" class="textbox" id="mail_id" required><br><br>
+<input type="text" name="name" placeholder="Enter name" class="textbox" id="mail_id" required><br><br>
+<input type="text" name="gender" placeholder="Enter gender" class="textbox" id="mail_id" required><br><br>
+<input type="password" name="password" placeholder="Enter password" class="textbox" id="mail_id" required><br><br>
+<input type="text" name="address" placeholder="Enter address" class="textbox" id="mail_id" required><br><br>
+<input type="text" name="category" placeholder="Enter user proffession" class="textbox" id="mail_id" required><br><br>
+<input type='submit' class="btn" value='add'>
+</form>
+<br>
+</div>
+</div>
+{% endblock %}
+</body>
+</html>

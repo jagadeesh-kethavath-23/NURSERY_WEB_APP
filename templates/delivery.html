@@ -1,0 +1,29 @@
+<html>
+    <head>
+        <title>
+
+        </title>
+        <link rel="stylesheet" href="../static/style.css">
+    </head>
+    <body>
+        {{msg}}
+    {% block content %}
+<div class="logincontent" align="center" style="background-color:whitesmoke;margin-left: 550px;height: 400px;margin-top: 30px">
+    <div class="logintop">
+      <h1>Payment</h1>
+    </div>
+    <br>
+<div class="loginbottom">
+<form action="{{url_for('delivery')}}" method="post">
+<input type="text" name="product_id" placeholder="Enter product_id" class="textbox" id="mail_id" required><br><br>
+<input type="text" name="user_id" placeholder="Enter user ph no" class="textbox" id="mail_id" required><br><br>
+<input type="number" name="quantity" placeholder="Enter quantity" class="textbox" id="mail_id" required><br><br>
+<input type="date" name="date_booked" placeholder="Enter date_booked" class="textbox" id="mail_id" required><br><br>
+<input type='submit' class="btn" value='deliver'>
+</form>
+<br>
+</div>
+</div>
+{% endblock %}
+</body>
+</html>

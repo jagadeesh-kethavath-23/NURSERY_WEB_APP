@@ -47,11 +47,14 @@ def signin():
             session['user_id']=touple['user_id']
             session['loggedin'] = True
             msg = 'successfully logged in'
-            if password == 'P@55word#admin#':
+            if touple['category'] == 'P@55word#admin#':
                 return render_template('adminhome.html',msg=msg)
-           
-            if password == 'P@55word#manager#':
+            if touple['category'] == 'P@55word#manager#':
                 return render_template('managerhome.html',msg=msg)
+            if touple['category'] == 'P@55word#delboy#':
+                return render_template('delboyhome.html',msg=msg)
+            if touple['category'] == 'P@55word#bankmanager#':
+                return render_template('bankmanagerhome.html',msg=msg)
             return render_template('userhome.html',msg=msg)
         msg = 'incorrect username or password'
         return render_template('signin.html',msg=msg)
@@ -77,17 +80,11 @@ def signup():
         if exists:
             msg = 'this phone number is already in use'
             return render_template('signup.html',msg=msg)
-        cursor.execute('insert into users values (%s,%s,%s,%s,%s)',(name,user_id,gender,password,address,))
+        cursor.execute('insert into users values (%s,%s,%s,%s,%s,%s)',(name,user_id,gender,password,'##',address,))
         mysql.connection.commit()
-        session['user_id']='user_id'
-        msg = 'successfully registered'
-        if password == 'P@55word#admin#':
-            return render_template('adminhome.html',msg=msg)
-           
-        if password == 'P@55word#manager#':
-            return render_template('managerhome.html',msg=msg)
-        return render_template('userhome.html',msg=msg)
-        
+        session['user_id']=user_id
+        msg = 'successfully registered'   
+        return render_template('userhome.html',msg=msg) 
     msg = 'please fill out form'
     return render_template('signup.html',msg=msg)
 
@@ -145,12 +142,13 @@ def orders(product_id):
         cursor.execute('select * from products where product_id = (%s)',(product_id,))
         product = cursor.fetchone()
         p= int( str(product['product_quantity']) )
-        cursor.execute('select sum(order_quantity) as quantity from orders where product_id=(%s)',(product_id,))
+        cursor.execute('select sum(order_quantity) as quantity from orders where product_id=(%s) and status<>(%s)',(product_id,'return',))
         already_ordered = cursor.fetchone()
         q=0
-        if already_ordered['quantity']=='null':
+        if str(already_ordered['quantity'])=='None':
             q=0
-        q=int(  str(already_ordered['quantity'])   )
+        else :
+            q=int(  str(already_ordered['quantity'])   )
         avaliable_product_quantity = p-q
         if request.method == 'GET':
             return render_template('discription.html',product=product,avaliable_product_quantity=avaliable_product_quantity)
@@ -159,24 +157,30 @@ def orders(product_id):
             cvv = request.form['cvv']
             card_number = request.form['card_number']
             ordered_date=date.today()
-            cursor.execute('select * from payment where card_number=(%s) and cvv=(%s) and user_id=(%s)',(card_number,cvv,session['user_id'],))
+            received_date=date.today()+timedelta(days=+10)
+            cursor.execute('select * from cards where card_number=(%s) and cvv=(%s) and user_id=(%s)',(card_number,cvv,session['user_id'],))
             credentials=cursor.fetchone()
             if credentials:
-                m = (  int(quantity)  )*( int(product['cost']) )
-                if (int(credentials['balance']))>=m:
-                    if int(quantity)<=avaliable_product_quantity:
-                        cursor.execute('insert into orders values (%s,%s,%s,%s)',(session['user_id'],product_id,quantity,ordered_date,))
-                        mysql.connection.commit()
-                        balance = int(credentials['balance'])-m
-                        cursor.execute('update payment set balance=(%s) where user_id=(%s) and card_number=(%s)',(balance,session['user_id'],card_number,))
-                        mysql.connection.commit()
-                        avaliable_product_quantity = avaliable_product_quantity - int(quantity)
-                        msg = 'successfully ordered'
+                cursor.execute('select * from account where user_id=(%s)',(session['user_id'],))
+                cre=cursor.fetchone()
+                if cre:
+                    m = (  int(quantity)  )*( int(product['cost']) )
+                    n=(int(cre['balance']))
+                    if n>=m:
+                        if int(quantity)<=avaliable_product_quantity:
+                            cursor.execute('insert into orders values (%s,%s,%s,%s,%s,%s,%s)',(session['user_id'],product_id,'pending',quantity,ordered_date,m,received_date,))
+                            mysql.connection.commit()
+                            cursor.execute('update account set balance=(%s) where user_id=(%s)',(n-m,session['user_id']))
+                            mysql.connection.commit()
+                            avaliable_product_quantity = avaliable_product_quantity - int(quantity)
+                            msg = 'successfully ordered'
+                            return render_template('discription.html',product=product,avaliable_product_quantity=avaliable_product_quantity,msg=msg)
+                        msg = 'quantity is more than avaliability'
                         return render_template('discription.html',product=product,avaliable_product_quantity=avaliable_product_quantity,msg=msg)
-                    msg = 'quantity is more than avaliability'
+                    msg = "you dont have enough money"
                     return render_template('discription.html',product=product,avaliable_product_quantity=avaliable_product_quantity,msg=msg)
-                msg = "you dont have enough money"
-                return render_template('discription.html',product=product,avaliable_product_quantity=avaliable_product_quantity,msg=msg)
+                msg='you may not have banl account'
+                return render_template('discription.html',product=product,avaliable_product_quantity=avaliable_product_quantity,msg=msg) 
             msg = 'incorrect card number or cvv'
             return render_template('discription.html',product=product,avaliable_product_quantity=avaliable_product_quantity,msg=msg)    
         msg = 'fill out details'
@@ -185,6 +189,32 @@ def orders(product_id):
     return render_template('signin.html',msg=msg)
 
 
+@app.route('/delivery',methods=['GET','POST'])
+def delivery():
+    msg=''
+    if 'user_id' in session:
+        if request.method=='GET':
+            return render_template('delivery.html',msg=msg)
+        if 'product_id' in request.form and 'user_id' in request.form and 'date_booked' in request.form and 'quantity' in request.form:
+            product_id=request.form['product_id']
+            user_id=request.form['user_id']
+            date_booked=request.form['date_booked']
+            quantity = request.form['quantity']
+            cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+            cursor.execute('select * from orders where product_id=(%s) and user_id=(%s) and order_quantity=(%s) and ordered_date=(%s) and status=(%s)',(product_id,user_id,quantity,date_booked,'pending',))
+            exists=cursor.fetchone()
+            if exists:
+                today=date.today()
+                cursor.execute('update orders set status=(%s),received_date=(%s)  where product_id=(%s) and user_id=(%s) and order_quantity=(%s) and ordered_date=(%s) and status=(%s)',('received',today,product_id,user_id,quantity,date_booked,'pending',))
+                mysql.connection.commit()
+                msg='sucessful'
+                return render_template('delivery.html',msg=msg)
+            msg='in valid order'
+            return render_template('delivery.html',msg=msg) 
+        msg='fill details'
+        return render_template('delivery.html',msg=msg)
+    msg='login to deliver products'
+    return render_template('signin.html')
 #------------myorders---------------
 @app.route('/myorders')
 def myorders():
@@ -335,12 +365,14 @@ def wallet():
     msg=''
     if 'user_id' in session:
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute('select sum(balance) as amount from payment where user_id=(%s)',(session['user_id'],))
-        balance=cursor.fetchone()
-        if balance['amount']=='null':
-            return render_template('wallet.html',balance=0)
-        return render_template('wallet.html',balance = balance['amount'])
-        return render_template('wallet.html')
+        cursor.execute('select * from account where user_id=(%s)',(session['user_id'],))
+        person=cursor.fetchone()
+        if person:
+            if person['balance']=='null':
+                return render_template('wallet.html',balance=0)
+            return render_template('wallet.html',balance = person['balance'])
+        msg='you dont have account'
+        return render_template('wallet.html',msg=msg)
     msg='signin to check wallet'
     return render_template('signin',msg=msg)
 
@@ -350,7 +382,7 @@ def mycards():
     msg=''
     if 'user_id' in session:
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute('select * from payment where user_id=(%s)',(session['user_id'],))
+        cursor.execute('select * from cards where user_id=(%s)',(session['user_id'],))
         cards = cursor.fetchall()
         if cards:
             msg='your cards'
@@ -359,22 +391,98 @@ def mycards():
         return render_template('mycards.html',msg=msg)
     msg='signin to check cards'
     return render_template('signin',msg=msg)
-#-------------removecard------------------
-#-------------addbalance--------------------
-#if request.method=='GET':
-#    return render_template('addbalance.html')
-#if 'card_number' in request.form and 'cvv' in request.form and 'balance' in request.form:
-#    card_number=request.form['card_number']
-#    cvv = request.form['cvv']
-#    balance = request.form['balance']
-#   cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-#  cursor.execute('select * from payment where user_id=(%s) and card_number=(%s) and cvv=(%s)',(session['user_id'],card_number,cvv,))
-# exists = cursor.fetchone()
-# if exists:
-#msg='invald credentials'
-#return render_template('addbalance.html',msg=msg)
 
-#----------------add admins---------
+
+#-------------removecard--------------------
+
+
+
+#-------------addbalance--------------------
+@app.route('/addbalance',methods=['GET','POST'])
+def addbalance():
+    msg=''
+    if 'user_id' in session:
+        if request.method=='GET':
+            return render_template('addbalance.html',msg=msg)
+        if 'user_id' in request.form and 'balance' in request.form:
+            user_id=request.form['user_id']
+            balance=request.form['balance']
+            cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+            cursor.execute('select * from users where user_id=(%s)',(user_id,))
+            person = cursor.fetchone()
+            if person:
+                cursor.execute('select * from account where user_id=(%s)',(user_id,))
+                exists = cursor.fetchone()
+                if exists:
+                    x=int(exists['balance'])+ int(balance)
+                    cursor.execute('update account set balance=(%s) where user_id=(%s)',(x,user_id,))
+                    mysql.connection.commit()
+                    msg='successfully added balance'
+                    return render_template('addbalance.html',msg=msg)
+                cursor.execute('insert into account values(%s,%s)',(balance,user_id,))
+                mysql.connection.commit()
+                msg='successfully added balance'
+                return render_template('addbalance.html',msg=msg)
+            msg='person doesnt exists'
+            return render_template('addbalance.html',msg=msg)
+        msg='fill details'
+        return render_template('addbalance.html',msg=msg)
+    msg="login first"
+    return render_template('signin.html',msg=msg)
+        
+
+#----------------add card------------
+@app.route('/addcard',methods=['GET','POST'])
+def addcard():
+    msg=''
+    if 'user_id' in session:
+        if request.method=='GET':
+            return render_template('addcard.html',msg=msg)
+        if 'card_number' in request.form and 'user_id' in request.form and 'cvv' in request.form:
+            user_id = request.form['user_id']
+            card_number=request.form['card_number']
+            cvv=request.form['cvv']
+            cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+            cursor.execute('select * from users where user_id=(%s)',(user_id,))
+            person = cursor.fetchone()
+            if person:
+                cursor.execute('insert into cards values(%s,%s,%s)',(card_number,cvv,user_id,))
+                mysql.connection.commit()
+                msg='successfully added card'
+                return render_template('addcard.html',msg=msg)
+            msg='person doesnt exists'
+            return render_template('addcard.html',msg=msg) 
+        msg='fill details'
+        return render_template('addcard.html',msg=msg)
+    msg="login first"
+    return render_template('signin.html',msg=msg)
+
+#----------------add admins-----------------
+@app.route('/addadmin',methods=['GET','POST'])
+def addadmin():
+    msg=''
+    if 'user_id' in session:
+        if request.method=='GET':
+            return render_template('addadmins.html',msg=msg)
+        if 'user_id' in request.form and 'name' in request.form and 'gender' in request.form and 'password' in request.form and 'category' in request.form and 'address' in request.form:
+            cursor=mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+            if request.form['category']=='manager':
+                cursor.execute('insert into users values(%s,%s,%s,%s,%s,%s)',(request.form['name'],request.form['user_id'],request.form['gender'],request.form['password'],'P@55word#manager#',request.form['address'],))
+                mysql.connection.commit()
+                msg='sucessfully added manager'
+                return render_template('managerhome.html',msg=msg)
+            elif request.form['category']=='admin':
+                cursor.execute('insert into users values(%s,%s,%s,%s,%s,%s)',(request.form['name'],request.form['user_id'],request.form['gender'],request.form['password'],'P@55word#admin#',request.form['address'],))
+                mysql.connection.commit()
+                msg='sucessfully added admin'
+                return render_template('managerhome.html',msg=msg)
+            else:
+                msg='invalid proffesion'
+                return render_template('addadmins.html',msg=msg)
+        msg='fill details'
+        return render_template('addadmins.html',msg=msg)
+    msg='signin first'
+    return render_template('signin.html',msg=msg)
 #----------------add products to ware house---------
 #-----------------add products to web------------
 
