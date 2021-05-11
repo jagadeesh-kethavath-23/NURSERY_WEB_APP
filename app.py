@@ -532,7 +532,7 @@ def addproducts_():
             return render_template('addproducts_.html',msg=msg)
     if  'a' in request.form and 'b' in request.form and 'c' in request.form:
         cursor=mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute('insert into warehouse values(%s,%s,%s,%s,%s)',(request.form['a'],request.form['b'],request.form['c'],session['user_id'],date.today()))
+        cursor.execute('insert into warehouse values(%s,%s,%s,%s,%s)',(request.form['a'],request.form['b'],request.form['c'],session['user_id'],date.today(),))
         mysql.connection.commit()
         msg='successfully added'
         return render_template('adminhome.html',msg=msg)
