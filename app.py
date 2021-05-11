@@ -553,7 +553,7 @@ def addproducts():
         cursor.execute('select * from warehouse where product_id=(%s) and quantity=(%s)',(request.form['a'],request.form['b'],))
         exists=cursor.fetchone()
         if exists:
-            cursor.execute('insert into products values(%s,%s,%s,%s,%s,%s)',(request.form['a'],request.form['b'],request.form['c'],request.form['d'],request.form['e'],))
+            cursor.execute('insert into products values(%s,%s,%s,%s,%s)',(request.form['a'],request.form['b'],request.form['c'],request.form['d'],request.form['e'],))
             mysql.connection.commit()
             msg='successfully added'
             return render_template('managerhome.html',msg=msg)
