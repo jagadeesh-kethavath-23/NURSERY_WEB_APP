@@ -58,7 +58,7 @@ CREATE TABLE IF NOT EXISTS `nursery_db`.`warehouse` (
   `quantity` INT NOT NULL,
   `user_id` VARCHAR(20) NOT NULL,
   `date_added` DATE NOT NULL,
-  PRIMARY KEY (`product_id`, `ware_house_address`, `date_added`),
+  PRIMARY KEY (`product_id`, `ware_house_address`, `date_added`,`quantity`),
   INDEX `user_id4_idx` (`user_id` ASC) VISIBLE,
   CONSTRAINT `user_id4`
     FOREIGN KEY (`user_id`)

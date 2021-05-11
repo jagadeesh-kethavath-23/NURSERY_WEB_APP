@@ -534,6 +534,8 @@ def addproducts_():
             return render_template('addproducts_.html',msg=msg)
     if  'a' in request.form and 'b' in request.form and 'c' in request.form:
         cursor=mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute('select * from warehouse where product_id=(%s) and ware_house_address=(%s) and date_added=(%s) and quantity=(%s)',(request.form['a'],request.form['b'],date.today(),request.form['c'],))
+        exists=cursor.fetchone()
         cursor.execute('insert into warehouse values(%s,%s,%s,%s,%s)',(request.form['a'],request.form['b'],request.form['c'],session['user_id'],date.today(),))
         mysql.connection.commit()
         msg='successfully added'
@@ -552,9 +554,17 @@ def addproducts():
             return render_template('addproducts.html',msg=msg)
     if  'a' in request.form and 'b' in request.form and 'c' in request.form and 'd' in request.form and 'e' in request.form:
         cursor=mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute('select * from warehouse where product_id=(%s) and quantity=(%s)',(request.form['a'],request.form['b'],))
+        cursor.execute('select * from warehouse where product_id=(%s) and quantity=(%s) and date_added=(%s)',(request.form['a'],request.form['b'],date.today(),))
         exists=cursor.fetchone()
         if exists:
+            cursor.execute('select * from products where product_id=(%s)',(request.form['a'],))
+            exists=cursor.fetchone()
+            if exists:
+                quantity = int(request.form['b']) + int(exists['product_quantity'])
+                cursor.execute('update products set product_quantity=(%s)',(quantity,))
+                mysql.connection.commit()
+                msg='successfully added'
+                return render_template('managerhome.html',msg=msg)
             cursor.execute('insert into products values(%s,%s,%s,%s,%s)',(request.form['a'],request.form['b'],request.form['c'],request.form['d'],request.form['e'],))
             mysql.connection.commit()
             msg='successfully added'
