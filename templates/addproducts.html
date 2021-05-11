@@ -1,0 +1,27 @@
+<html>
+    <head>
+        <title>
+
+        </title>
+        <link rel="stylesheet" href="../static/style.css">
+        </head>
+		<body  style="background-image:url('../static/images/p71.jpg');background-position: center center;overflow:hidden;background-size: 100% 100%">
+<div class="logincontent" align="center" style="background-color:whitesmoke;margin-left: 970px;height: 450px;margin-top: 100px">
+    <div class="logintop">
+      <h1>Add products here</h1>
+    </div>
+    <br>
+<div class="loginbottom">
+<form action="{{url_for('addproducts')}}" method="post">
+<input type="text" name="a" placeholder="Enter product_id" class="textbox" id="mail_id" required><br><br>
+<input type="number" name="b" placeholder="Enter quantity" class="textbox" id="mail_id" required><br><br>
+<input type="text" name="c" placeholder="Enter product name" class="textbox" id="mail_id" required><br><br>
+<input type="text" name="d" placeholder="Enter product type" class="textbox" id="mail_id" required><br><br>
+<input type="text" name="e" placeholder="Enter price" class="textbox" id="mail_id" required><br><br>
+<input type='submit' class="btn" style="color: white;background-color: blue;"value='add'>
+</form>
+<br>
+</div>
+</div>
+</body>
+</html>

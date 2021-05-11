@@ -1,12 +1,12 @@
 <html>
     <head>
         <title>
-
+            checkreview
         </title>
         <link rel="stylesheet" href="../static/style.css">
     </head>
     <body>
-        <div class="msg">{{msg}}</div>
+       
         {% block content %}
         
             
@@ -50,12 +50,10 @@
                         </div>
                     </div>
                 </div>
+                <br><br>
                 {% for review in reviews %}
-                <!--div class="one">
-                    <div class="content" align="center">  <br>
-                        <div class="contentbar">
-                            <h1>My shelf</h1>    <br>
-                                <div class="border">-->
+                <h1> <div class="msg">{{msg}}</div> </h1>
+                
                                     <div style="border: 2px solid black; width: 400px;margin-left: 37vw;">
                                     <table ><br>
                                         <tr>

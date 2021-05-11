@@ -48,19 +48,48 @@ def signin():
             session['loggedin'] = True
             msg = 'successfully logged in'
             if touple['category'] == 'P@55word#admin#':
-                return render_template('adminhome.html',msg=msg)
+                return redirect(url_for('adminhome'))
             if touple['category'] == 'P@55word#manager#':
-                return render_template('managerhome.html',msg=msg)
+                return redirect(url_for('managerhome'))
             if touple['category'] == 'P@55word#delboy#':
-                return render_template('delboyhome.html',msg=msg)
+                return redirect(url_for('delboyhome'))
             if touple['category'] == 'P@55word#bankmanager#':
-                return render_template('bankmanagerhome.html',msg=msg)
-            return render_template('userhome.html',msg=msg)
+                return redirect(url_for('bankmanagerhome'))
+            return redirect(url_for('userhome'))
         msg = 'incorrect username or password'
         return render_template('signin.html',msg=msg)
     msg = 'please fill out form'
     return render_template('signin.html',msg=msg)
 
+#---------------adminhome----------------
+@app.route('/adminhome',methods=['GET'])
+def adminhome():
+    msg='successfully logged in'
+    return render_template('adminhome.html',msg=msg)
+
+#---------------managerhome----------------
+@app.route('/managerhome',methods=['GET'])
+def managerhome():
+    msg='successfully logged in'
+    return render_template('managerhome.html',msg=msg)
+
+#---------------bankmanagerhome----------------
+@app.route('/bankmanagerhome',methods=['GET'])
+def bankmanagerhome():
+    msg='successfully logged in'
+    return render_template('bankmanagerhome.html',msg=msg)
+
+#---------------delboyhome----------------
+@app.route('/delboyhome',methods=['GET'])
+def delboyhome():
+    msg='successfully logged in'
+    return render_template('delboyhome.html',msg=msg)
+
+#---------------userhome----------------
+@app.route('/userhome',methods=['GET'])
+def userhome():
+    msg='successfully logged in'
+    return render_template('userhome.html',msg=msg)
 
 #-----------------signup------------------
 @app.route('/signup',methods=['GET','POST'])
@@ -84,7 +113,7 @@ def signup():
         mysql.connection.commit()
         session['user_id']=user_id
         msg = 'successfully registered'   
-        return render_template('userhome.html',msg=msg) 
+        return redirect(url_for('userhome'))
     msg = 'please fill out form'
     return render_template('signup.html',msg=msg)
 
@@ -263,11 +292,14 @@ def givereview(product_id):
             return render_template('givereview.html',product = product,msg=msg)
         if 'discription' in request.form and 'rating' in request.form :
             discription = request.form['discription']
-            rating = request.form['rating']
-            cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-            cursor.execute('insert into reviews values(%s,%s,%s,%s)',(product_id,session['user_id'],rating,discription,))
-            mysql.connection.commit()
-            msg = 'successfully reviewed'
+            rating = request.form['rating'] 
+            if int(rating)<=5:
+                cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+                cursor.execute('insert into reviews values(%s,%s,%s,%s)',(product_id,session['user_id'],rating,discription,))
+                mysql.connection.commit()
+                msg = 'successfully reviewed'
+                return render_template('givereview.html',product = product,msg=msg)
+            msg='rating cant be greater than 5'
             return render_template('givereview.html',product = product,msg=msg)
         msg = 'fil out form'
         return render_template('givereview.html',product = product,msg=msg)
@@ -393,7 +425,7 @@ def mycards():
     return render_template('signin',msg=msg)
 
 
-#-------------removecard--------------------
+
 
 
 
@@ -457,6 +489,7 @@ def addcard():
     msg="login first"
     return render_template('signin.html',msg=msg)
 
+
 #----------------add admins-----------------
 @app.route('/addadmin',methods=['GET','POST'])
 def addadmin():
@@ -476,6 +509,11 @@ def addadmin():
                 mysql.connection.commit()
                 msg='sucessfully added admin'
                 return render_template('managerhome.html',msg=msg)
+            elif request.form['category']=='delivery boy':
+                cursor.execute('insert into users values(%s,%s,%s,%s,%s,%s)',(request.form['name'],request.form['user_id'],request.form['gender'],request.form['password'],'P@55word#delboy#',request.form['address'],))
+                mysql.connection.commit()
+                msg='sucessfully added delivary'
+                return render_template('managerhome.html',msg=msg)
             else:
                 msg='invalid proffesion'
                 return render_template('addadmins.html',msg=msg)
@@ -483,8 +521,50 @@ def addadmin():
         return render_template('addadmins.html',msg=msg)
     msg='signin first'
     return render_template('signin.html',msg=msg)
+
+
 #----------------add products to ware house---------
+@app.route('/addproducts_',methods=['GET','POST'])
+def addproducts_():
+    msg=''
+    if 'user_id' in session:
+        if request.method=='GET':
+            return render_template('addproducts_.html',msg=msg)
+    if  'a' in request.form and 'b' in request.form and 'c' in request.form:
+        cursor=mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute('insert into warehouse values(%s,%s,%s,%s,%s)',(request.form['a'],request.form['b'],request.form['c'],session['user_id'],date.today()))
+        mysql.connection.commit()
+        msg='successfully added'
+        return render_template('adminhome.html',msg=msg)
+    msg='fill the form'
+    return render_template('addproducts_.html',msg=msg)
+    msg='signin to addproducts_'
+    return render_template('signin.html',msg=msg)
+
 #-----------------add products to web------------
+@app.route('/addproducts',methods=['GET','POST'])
+def addproducts():
+    msg=''
+    if 'user_id' in session:
+        if request.method=='GET':
+            return render_template('addproducts.html',msg=msg)
+    if  'a' in request.form and 'b' in request.form and 'c' in request.form and 'd' in request.form and 'e' in request.form:
+        cursor=mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute('select * from warehouse where product_id=(%s) and quantity=(%s)',(request.form['a'],request.form['b'],))
+        exists=cursor.fetchone()
+        if exists:
+            cursor.execute('insert into products values(%s,%s,%s,%s,%s,%s)',(request.form['a'],request.form['b'],request.form['c'],request.form['d'],request.form['e'],))
+            mysql.connection.commit()
+            msg='successfully added'
+            return render_template('managerhome.html',msg=msg)
+        msg='no such products exists in warehouse'
+        return render_template('managerhome.html',msg=msg)
+    msg='fill the form'
+    return render_template('addproducts.html',msg=msg)
+    msg='signin to add products'
+    return render_template('signin.html',msg=msg)
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)
