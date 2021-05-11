@@ -17,7 +17,7 @@ app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 mysql = MySQL(app)
 
 
-#----------------default page when the server gets loaded-----------------
+#----------------default page when the server gets loaded------------------------------------------
 @app.route('/')
 @app.route('/index')
 def index():
@@ -25,13 +25,13 @@ def index():
     return render_template('index.html')
 
 
-#---------------for the error page-----------
+#---------------for the error page----------------------------------------------------------------
 @app.errorhandler(404)
 def page_not_found(error):
     return render_template('page_not_found.html'), 404
 
 
-#--------------signin----------------------
+#--------------signin-----------------------------------------------------------------------------
 @app.route('/signin',methods=['GET','POST'])
 def signin():
     msg=''
@@ -91,7 +91,7 @@ def userhome():
     msg='successfully logged in'
     return render_template('userhome.html',msg=msg)
 
-#-----------------signup------------------
+#-----------------signup-------------------------------------------------------------
 @app.route('/signup',methods=['GET','POST'])
 def signup():
     msg=''
@@ -118,7 +118,7 @@ def signup():
     return render_template('signup.html',msg=msg)
 
 
-#----------------logout----------------------
+#----------------logout---------------------------------------------------------------
 @app.route('/logout')
 def logout():
     session.pop('user_id', None)
@@ -126,7 +126,7 @@ def logout():
     return render_template('index.html')
 
 
-#---------------shop by search---------------
+#---------------shop by search--------------------------------------------------------
 @app.route('/shopbysearch',methods=['GET','POST']) 
 def shopbysearch():
     msg = ''
@@ -146,7 +146,7 @@ def shopbysearch():
     return render_template('shop.html',msg=msg)
 
 
-#------------shop---------------------
+#------------shop---------------------------------------------------------------------------
 @app.route('/shop',methods=['GET'])
 def shop():
     msg=''
@@ -162,7 +162,7 @@ def shop():
     return render_template('shop.html',products=products,msg=msg)
 
 
-#-------------order and payment-----------------
+#-------------order and payment-----------------------------------------------------------------
 @app.route('/orders/<product_id>',methods=['GET','POST'])
 def orders(product_id):
     msg=''
@@ -218,6 +218,8 @@ def orders(product_id):
     return render_template('signin.html',msg=msg)
 
 
+
+#--------------delivaring product to customer--------------------------------------------------------------
 @app.route('/delivery',methods=['GET','POST'])
 def delivery():
     msg=''
@@ -244,7 +246,9 @@ def delivery():
         return render_template('delivery.html',msg=msg)
     msg='login to deliver products'
     return render_template('signin.html')
-#------------myorders---------------
+
+
+#------------myorders-------------------------------------------------------------------------------
 @app.route('/myorders')
 def myorders():
     msg=''
@@ -261,7 +265,7 @@ def myorders():
     return render_template('signin.html',msg = msg)
 
 
-#----------------checking reviews-------------------
+#----------------checking reviews-----------------------------------------------------------
 @app.route('/checkreview/<product_id>',methods=['GET'])
 def checkreview(product_id):
     msg = ''
@@ -280,7 +284,7 @@ def checkreview(product_id):
     return render_template('signin.html',msg=msg)
 
 
-#------------give review------------
+#------------give review------------------------------------------------------------------------------
 @app.route('/givereview/<product_id>',methods = ['GET','POST'])
 def givereview(product_id):
     msg = ''
@@ -307,7 +311,7 @@ def givereview(product_id):
     return render_template('signin.html',msg=msg)
 
 
-#------------add_to_cart------------
+#------------add_to_cart----------------------------------------------------------------------
 @app.route('/add_to_cart/<product_id>',methods=['GET'])
 def add_to_cart(product_id):
     msg=''
@@ -326,7 +330,7 @@ def add_to_cart(product_id):
     return render_template('signin.html',msg=msg)        
 
 
-#------------my_cart----------------
+#------------my_cart-----------------------------------------------------------------------
 @app.route('/mycart',methods=['GET'])
 def mycart():
     msg=''
@@ -343,7 +347,7 @@ def mycart():
     return render_template('signin.html',msg=msg)
 
 
-#-----------remove_from_cart--------
+#-----------remove_from_cart-------------------------------------------------------------
 @app.route('/remove/<product_id>',methods=['GET'])
 def remove(product_id):
     msg=''
@@ -357,7 +361,7 @@ def remove(product_id):
     return render_template('signin.html',msg=msg)
 
 
-#------------profile------------------
+#------------profile--------------------------------------------------------------------------
 @app.route('/profile',methods=['GET'])
 def profile():
     msg=''
@@ -369,7 +373,7 @@ def profile():
     msg = 'signin to display profile'
     return render_template('signin.html',msg=msg)
 
-#----------updateprofile-------------
+#----------updateprofile-------------------------------------------------------------------------
 @app.route('/updateprofile',methods=['GET','POST'])
 def updateprofile():
     msg=''
@@ -391,7 +395,7 @@ def updateprofile():
     msg='login to update profile'
     return render_template('signin.html',msg=msg)
 
-#----------------wallet----------
+#----------------wallet---------------------------------------------------------------------------
 @app.route('/wallet')
 def wallet():
     msg=''
@@ -408,7 +412,7 @@ def wallet():
     msg='signin to check wallet'
     return render_template('signin',msg=msg)
 
-#------------mycards-------------
+#------------mycards------------------------------------------------------------------------
 @app.route('/mycards')
 def mycards():
     msg=''
@@ -427,9 +431,7 @@ def mycards():
 
 
 
-
-
-#-------------addbalance--------------------
+#-------------addbalance----------------------------------------------------------------------
 @app.route('/addbalance',methods=['GET','POST'])
 def addbalance():
     msg=''
@@ -463,7 +465,7 @@ def addbalance():
     return render_template('signin.html',msg=msg)
         
 
-#----------------add card------------
+#----------------add card------------------------------------------------------------------------
 @app.route('/addcard',methods=['GET','POST'])
 def addcard():
     msg=''
@@ -490,7 +492,7 @@ def addcard():
     return render_template('signin.html',msg=msg)
 
 
-#----------------add admins-----------------
+#----------------adding fresh colleges---------------------------------------------------
 @app.route('/addadmin',methods=['GET','POST'])
 def addadmin():
     msg=''
@@ -523,7 +525,7 @@ def addadmin():
     return render_template('signin.html',msg=msg)
 
 
-#----------------add products to ware house---------
+#----------------add products to ware house-----------------------------------------------------
 @app.route('/addproducts_',methods=['GET','POST'])
 def addproducts_():
     msg=''
@@ -541,7 +543,7 @@ def addproducts_():
     msg='signin to addproducts_'
     return render_template('signin.html',msg=msg)
 
-#-----------------add products to web------------
+#-----------------add products to web---------------------------------------------------
 @app.route('/addproducts',methods=['GET','POST'])
 def addproducts():
     msg=''
