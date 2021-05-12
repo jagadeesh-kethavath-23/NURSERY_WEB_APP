@@ -1,6 +1,5 @@
 # NURSERY_WEB_APP
- techstack used :
- [python](https://www.python.org/) [flask](https://palletsprojects.com/p/flask/) [mysql](https://www.mysql.com/) [html](https://en.wikipedia.org/wiki/HTML) [css](https://www.w3.org/Style/CSS/Overview.en.html)
+ techstack used :[python](https://www.python.org/) [flask](https://palletsprojects.com/p/flask/) [mysql](https://www.mysql.com/) [html](https://en.wikipedia.org/wiki/HTML) [css](https://www.w3.org/Style/CSS/Overview.en.html)
 
 # User Manual For Deployment
 
