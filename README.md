@@ -88,6 +88,7 @@ note : *nursery_db.sql file is located inside database directory of this reposit
 ###  connecting mysql and flask
 open app.py file and set mysql connection 
 
+set your mysql credentials into it
 ```python
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
