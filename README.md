@@ -10,9 +10,15 @@ if python is not installed or if the version is old on your pc follow this  [lin
 ## CLONING REPOSITORY
 create a project folder myproject and clone this repository into the myproject directory
 
+creating project directory  :
+
     mkdir myproject
+    
+   changing directory  : 
 
     cd myproject
+
+cloning this repository  :
 
     git clone https://github.com/jagadeesh-kethavath-23/NURSERY_WEB_APP.git
 
@@ -26,12 +32,22 @@ Python, you can continue on to the next section.
 #### creating an environment
 change directory to the cloned repository and create `venv` folder as shown
 
+changing directory:
+
     cd NURSERY_WEB_APP
+
+creating virtualenv:
 
     python virtual venv venv
+    
 if the above command wont work use this instead
 
+
+changing directory:
+
     cd NURSERY_WEB_APP
+    
+ creating virtualenv:
 
     py -3 virtual venv venv
 
