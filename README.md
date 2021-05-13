@@ -100,11 +100,16 @@ app.config['MYSQL_DB'] = 'nursery_db'
 
 Database cannot be empty to as there is no signup option for manager ,admin and delivary boy for security reasons.Whereas manager can add new admins,new managers and new delivery boys
 
-so there should be atleast one manager info inserted into the databse
+so there should be atleast one manager info inserted into the database
 
 use this query in query tab by selecting the nursery_db database
 
     INSERT INTO users VALUES('manager','8888888888','male','manager','P@55word#manager#','dvk');
+
+and one bank manager
+    
+    INSERT INTO users VALUES('bankie','9876543210','male','bankie','P@55word#bankmanager#','dvk');
+    
 
 ## RUNNING THE APPLICATION
 *use these command lines on actived virtual environment*
