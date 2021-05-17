@@ -39,8 +39,9 @@ changing directory:
 
 creating virtualenv:
 
-    python virtual venv venv
+    python -m venv venv
     
+
 if the above command wont work use this instead
 
 
